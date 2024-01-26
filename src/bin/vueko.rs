@@ -15,25 +15,32 @@ enum BEAlgorithm {
 }
 
 #[derive(Debug, Parser)]
-#[command(author, version, about, long_about = "One ")]
+#[command(author, version, about, long_about = "A tiny tool to evaluate binding energy (BE) of known nucleons")]
 struct Config {
+    /// Algorithm to use for Binding Energy evaluation
     #[arg(default_value = "weizsacker")]
     algorithm: BEAlgorithm,
-    #[arg(short = 'A')]
+    /// Nucleon count of a nuclide (commonly referred as "A"). This also represents it's mass number and barion charge
+    #[arg(short = 'A', long)]
     nucleons: Option<usize>,
-    #[arg(short = 'Z')]
+    /// Proton count of a nuclide (commonly referred as "Z"). This also represents total electric charge of the nuclide
+    #[arg(short = 'Z', long)]
     protons: Option<usize>,
-    #[arg(short = 'N')]
+    /// Neutron count of a nuclide (commonly referred as "N").
+    #[arg(short = 'N', long)]
     neutrons: Option<usize>,
+    /// Chemical identification of a nuclide. Must be a certain format, defined by Nuclide reference. For example: "He-3" or "U-235"
     #[arg(long = "chem")]
     chemical: Option<String>,
+    /// A flag for raw result display. Intended for easier chaining or file output
     #[arg(short)]
     raw: bool,
+    /// A flag to output BE energy per nucleon (total energy divided by A).
     #[arg(short)]
     per_nucleon: bool,
 }
 
-#[derive(Debug, ::thiserror::Error, derive_more::From)]
+#[derive(Debug, ::thiserror::Error)]
 enum Error {
     #[error("Failed to identify nuclide. Please specify at least two numbers or chemical element with nucleon count")]
     NotEnoughData,
